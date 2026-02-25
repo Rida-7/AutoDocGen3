@@ -79,20 +79,15 @@ def serialize_user(user: dict) -> dict:
 # Logout
 # -------------------------------
 @router.post("/logout")
-@router.post("/logout")
-async def logout():
-    is_prod = os.getenv("NODE_ENV") == "production"
-
+async def logout(response: Response):
     response = JSONResponse({"message": "Logged out successfully"})
-
     response.delete_cookie(
         key="token",
         path="/",
         httponly=True,
-        secure=is_prod,
-        samesite="none" if is_prod else "lax",
+        samesite="none" if os.getenv("NODE_ENV") == "production" else "lax",
+        secure=os.getenv("NODE_ENV") == "production"
     )
-
     return response
     
 # -------------------------------
