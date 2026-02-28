@@ -32,10 +32,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://autodocgen-production.up.railway.app"
-        "https://autodocgen3-production-d3e5.up.railway.app"
-        "https://autodocgen3-production-952a.up.railway.app"
-        "https://autodocgen3-production.up.railway.app"
+        "https://autodocgen-production.up.railway.app",
+        "https://autodocgen3-production-d3e5.up.railway.app",
+        "https://autodocgen3-production-952a.up.railway.app",
+        "https://autodocgen3-production.up.railway.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
