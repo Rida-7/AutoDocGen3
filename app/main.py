@@ -33,7 +33,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "https://autodocgen-production.up.railway.app"
-        "https://autodocgen3-production-d3ef.up.railway.app"
+        "https://autodocgen3-production-d3e5.up.railway.app"
         "https://autodocgen3-production-952a.up.railway.app"
         "https://autodocgen3-production.up.railway.app"
     ],
