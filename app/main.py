@@ -35,7 +35,7 @@ app.add_middleware(
         "https://autodocgen-production.up.railway.app",
         "https://autodocgen3-production-d3e5.up.railway.app",
         "https://autodocgen3-production-952a.up.railway.app",
-        "https://autodocgen3-production.up.railway.app",
+        "https://autodocgen3-production-2468.up.railway.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
