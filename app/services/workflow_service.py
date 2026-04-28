@@ -44,7 +44,8 @@ async def execute_workflow(user_id: str, project_id: str, data: dict = None, db=
         uploaded_pdf_bytes=b"",
         pdf_headings=pdf_headings,
         selected_headings=selected_headings,
-        generated_docs=""
+        generated_docs="",
+        template_name=template_name
     )
 
     # -------------------- Run AI Workflow --------------------

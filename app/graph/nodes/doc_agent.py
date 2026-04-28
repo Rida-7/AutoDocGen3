@@ -1,17 +1,41 @@
-# app/graph/nodes/doc_agent.py
 from langchain_google_genai import ChatGoogleGenerativeAI
-from app.langsmith.load_prompt import load_prompt_from_langsmith  
+from app.langsmith.load_prompt import load_prompt_from_langsmith
 
-def generate_documentation(cleaned_pm_data: str, pdf_headings: list, selected_headings: list):
+# ✅ Har template ka apna LangSmith prompt name
+TEMPLATE_PROMPT_MAP = {
+    "srs": "prompt_srs",
+    "sprintreport": "prompt_sprint_report",
+    "wbs": "prompt_wbs",
+    "testcase": "prompt_testcase",
+    
+    # fallback ke liye default
+}
+
+DEFAULT_PROMPT = "doc_prompt_pdf_selected"  # purana default
+
+
+def get_prompt_name(template_name: str) -> str:
     """
-    Generate clean, professional documentation from PM data
-    using a prompt fetched from LangSmith Prompt Hub 
+    Template name se matching LangSmith prompt name return karo.
+    Case-insensitive match. Agar koi match na mile toh default use karo.
     """
-    prompt = load_prompt_from_langsmith("doc_prompt_pdf_selected")
+    key = template_name.strip().lower()
+    return TEMPLATE_PROMPT_MAP.get(key, DEFAULT_PROMPT)
+
+
+def generate_documentation(
+    cleaned_pm_data: str,
+    pdf_headings: list,
+    selected_headings: list,
+    template_name: str = ""        # ✅ naya param
+):
+    prompt_name = get_prompt_name(template_name)
+    print(f"📄 [doc_agent] Template: '{template_name}' → Prompt: '{prompt_name}'")
+
+    prompt = load_prompt_from_langsmith(prompt_name)
     llm = ChatGoogleGenerativeAI(model='gemini-2.5-flash')
     chain = prompt | llm
 
-    # Pass all variables expected by your LangSmith prompt
     result = chain.invoke({
         "cleaned_pm_data": cleaned_pm_data,
         "pdf_headings": pdf_headings,
@@ -20,22 +44,26 @@ def generate_documentation(cleaned_pm_data: str, pdf_headings: list, selected_he
 
     return result.content if hasattr(result, "content") else str(result)
 
-def create_docs_node(state):
-    """
-    LangGraph node to generate documentation from pm_data.
-    """
+
+def create_docs_node(state: dict) -> dict:
     pm_data = state.get("pm_data", {})
     pdf_headings = state.get("pdf_headings", [])
     selected_headings = state.get("selected_headings", [])
+    template_name = state.get("template_name", "")   # ✅ state se lo
 
     print("\n📝 [create_docs_node] PM data received:")
     print(pm_data)
+    print(f"🗂️ Template: {template_name}")
 
     if not pm_data:
         return {"generated_docs": "⚠️ PM data is empty. Please check the Trello fetch step."}
 
-    # Convert pm_data dict to cleaned string (or real cleaning logic later)
     cleaned_pm_data = str(pm_data)
 
-    docs = generate_documentation(cleaned_pm_data, pdf_headings, selected_headings)
+    docs = generate_documentation(
+        cleaned_pm_data,
+        pdf_headings,
+        selected_headings,
+        template_name=template_name   # ✅ pass karo
+    )
     return {"generated_docs": docs}

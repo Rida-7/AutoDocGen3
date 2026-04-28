@@ -13,6 +13,7 @@ class WorkflowState(TypedDict):
     selected_headings: List[str]
     pm_data: Dict
     generated_docs: str
+    template_name: str
 
 graph = StateGraph(WorkflowState)
 
